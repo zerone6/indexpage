@@ -1,0 +1,342 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ========================================
+    // 서비스 시작 (Start)
+    // ========================================
+    {
+      "label": "1️⃣ Start Other Services",
+      "type": "shell",
+      "command": "docker compose up -d main-page highschool",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "2️⃣ Start Indexpage (Nginx)",
+      "type": "shell",
+      "command": "if docker compose ps main-page highschool 2>/dev/null | grep -q 'Up'; then docker compose up -d nginx-proxy; else echo '⚠️  Backend services not running! Run \"1️⃣ Start Other Services\" first.'; exit 1; fi",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "3️⃣ Start Full Services",
+      "type": "shell",
+      "command": "docker compose up -d && echo '' && echo '✅ All services started!' && echo '' && docker compose ps",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+
+    // ========================================
+    // 서비스 중지 (Stop)
+    // ========================================
+    {
+      "label": "4️⃣ Stop Indexpage (Nginx)",
+      "type": "shell",
+      "command": "docker compose stop nginx-proxy && echo '✅ Nginx stopped'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "5️⃣ Stop Other Services",
+      "type": "shell",
+      "command": "docker compose stop main-page highschool && echo '✅ Other services stopped'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "6️⃣ Stop Full Services",
+      "type": "shell",
+      "command": "docker compose down && echo '✅ All services stopped and removed'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+
+    // ========================================
+    // 개발 편의 기능 (Development)
+    // ========================================
+    {
+      "label": "7️⃣ Reload Nginx Config",
+      "type": "shell",
+      "command": "docker compose exec nginx-proxy nginx -t && docker compose exec nginx-proxy nginx -s reload && echo '✅ Nginx config reloaded'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "8️⃣ Rebuild and Restart Main-Page",
+      "type": "shell",
+      "command": "docker compose up -d --build main-page && echo '' && echo '✅ Main-page rebuilt and restarted!' && docker compose logs --tail=20 main-page",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "9️⃣ Rebuild and Restart Highschool",
+      "type": "shell",
+      "command": "docker compose up -d --build highschool && echo '' && echo '✅ Highschool rebuilt and restarted!' && docker compose logs --tail=20 highschool",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+
+    // ========================================
+    // 로그 및 모니터링 (Logs & Monitoring)
+    // ========================================
+    {
+      "label": "📋 View All Logs",
+      "type": "shell",
+      "command": "docker compose logs -f",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📋 View Nginx Logs",
+      "type": "shell",
+      "command": "docker compose logs -f nginx-proxy",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📋 View Main-Page Logs",
+      "type": "shell",
+      "command": "docker compose logs -f main-page",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📋 View Highschool Logs",
+      "type": "shell",
+      "command": "docker compose logs -f highschool",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📊 View Service Status",
+      "type": "shell",
+      "command": "clear && echo '=== Docker Compose Services ===' && docker compose ps && echo '' && echo '=== Resource Usage ===' && docker stats --no-stream",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+
+    // ========================================
+    // 테스트 및 검증 (Testing)
+    // ========================================
+    {
+      "label": "🧪 Test Endpoints",
+      "type": "shell",
+      "command": "echo '=== Testing Endpoints ===' && echo '' && echo 'Main Page (HTTPS):' && curl -k -s https://localhost/ | grep -q '가족 정보' && echo '✅ OK' || echo '❌ FAIL' && echo '' && echo 'Highschool (HTTPS):' && curl -k -s https://localhost/highschool/ | head -c 100 && echo '' && echo '' && echo 'Health Check:' && curl -s http://localhost/health && echo ''",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "🧪 Test Nginx Config",
+      "type": "shell",
+      "command": "docker compose exec nginx-proxy nginx -t",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+
+    // ========================================
+    // 유틸리티 (Utilities)
+    // ========================================
+    {
+      "label": "🔧 Clean Up Docker Resources",
+      "type": "shell",
+      "command": "echo '⚠️  This will remove unused Docker resources...' && docker compose down && docker system prune -f && echo '✅ Cleanup complete'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔧 Rebuild All Images (No Cache)",
+      "type": "shell",
+      "command": "docker compose build --no-cache && echo '✅ All images rebuilt'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "🌐 Open in Browser",
+      "type": "shell",
+      "command": "open https://localhost/",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+
+    // ========================================
+    // 프로덕션 모드 (Production Mode)
+    // ========================================
+    {
+      "label": "🚀 Start Production Mode (GHCR)",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.yml pull && docker compose -f docker-compose.yml up -d && echo '' && echo '✅ Production mode started!' && docker compose ps",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "🚀 Stop Production Mode",
+      "type": "shell",
+      "command": "docker compose -f docker-compose.yml down && echo '✅ Production mode stopped'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    }
+  ]
+}

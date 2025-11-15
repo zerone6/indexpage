@@ -1,0 +1,46 @@
+# 로컬 개발용 오버라이드 설정
+# 이 파일은 로컬에서만 사용되며, 서버에는 배포되지 않습니다.
+#
+# 사용법:
+#   로컬 테스트 (로컬 빌드): docker compose up -d
+#   프로덕션 테스트 (GHCR):  docker compose -f docker-compose.yml up -d
+#
+# 프로젝트 위치:
+#   ~/GitHub/homegroup/
+#   ├── indexpage/                (이 저장소)
+#   ├── highschool-calendar/      (Highschool 서비스)
+#   └── my-realestate-calc/       (Real Estate 서비스)
+
+services:
+  # Nginx - highschool이 없어도 시작할 수 있도록 depends_on 제거
+  nginx-proxy:
+    depends_on: []
+
+  # Highschool - 로컬 빌드 사용
+  highschool:
+    build:
+      context: ../highschool-calendar
+      dockerfile: Dockerfile
+    image: highschool:local
+    # GHCR 이미지 대신 로컬 빌드 사용
+
+  # Real Estate Frontend - 로컬 빌드 사용
+  # my-realestate-calc 프로젝트 구조에 맞게 경로 조정 필요
+  # realestate-frontend:
+  #   build:
+  #     context: ../my-realestate-calc/frontend
+  #     dockerfile: Dockerfile
+  #   image: realestate-frontend:local
+  #   profiles: []  # profile 제거하여 항상 시작
+
+  # Real Estate Backend - 로컬 빌드 사용
+  # my-realestate-calc 프로젝트 구조에 맞게 경로 조정 필요
+  # realestate-backend:
+  #   build:
+  #     context: ../my-realestate-calc/backend
+  #     dockerfile: Dockerfile
+  #   image: realestate-backend:local
+  #   profiles: []  # profile 제거하여 항상 시작
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=local
+  #     - SERVER_PORT=8080
