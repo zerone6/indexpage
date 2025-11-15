@@ -13,6 +13,9 @@ services:
     networks:
       - web
     restart: unless-stopped
+    depends_on:
+      - main-page
+      - highschool
 
   # 메인 페이지 (가족정보 공유사이트)
   main-page:
