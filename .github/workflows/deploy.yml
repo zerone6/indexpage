@@ -52,6 +52,13 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Backup SSL certificates if they exist
+            if [ -d ~/indexpage/nginx/ssl ] && [ -f ~/indexpage/nginx/ssl/fullchain.pem ]; then
+              echo "Backing up SSL certificates..."
+              mkdir -p /tmp/ssl_backup
+              cp ~/indexpage/nginx/ssl/*.pem /tmp/ssl_backup/ 2>/dev/null || true
+            fi
+
             # Load main-page image
             cd /tmp
             docker load < main-page-image.tar.gz
@@ -59,6 +66,14 @@ jobs:
 
             # Navigate to indexpage directory
             cd ~/indexpage
+
+            # Restore SSL certificates
+            if [ -d /tmp/ssl_backup ] && [ -f /tmp/ssl_backup/fullchain.pem ]; then
+              echo "Restoring SSL certificates..."
+              mkdir -p nginx/ssl
+              cp /tmp/ssl_backup/*.pem nginx/ssl/
+              rm -rf /tmp/ssl_backup
+            fi
 
             # Create networks if they don't exist
             docker network create web 2>/dev/null || true
