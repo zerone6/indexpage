@@ -1,0 +1,34 @@
+# 로컬 개발용 오버라이드 설정
+# 이 파일은 로컬에서만 사용되며, 서버에는 배포되지 않습니다.
+#
+# 사용법:
+#   로컬 테스트: docker compose up -d
+#   프로덕션과 동일하게: docker compose -f docker-compose.yml up -d
+
+services:
+  # Highschool - 로컬 빌드 사용
+  highschool:
+    build:
+      context: ../highschool-calendar
+      dockerfile: Dockerfile
+    image: highschool:local
+    # GHCR 이미지 대신 로컬 빌드 사용
+
+  # Real Estate Frontend - 로컬 빌드 사용
+  realestate-frontend:
+    build:
+      context: ../realestate-calc/frontend
+      dockerfile: Dockerfile
+    image: realestate-frontend:local
+    profiles: []  # profile 제거하여 항상 시작
+
+  # Real Estate Backend - 로컬 빌드 사용
+  realestate-backend:
+    build:
+      context: ../realestate-calc/backend
+      dockerfile: Dockerfile
+    image: realestate-backend:local
+    profiles: []  # profile 제거하여 항상 시작
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - SERVER_PORT=8080
