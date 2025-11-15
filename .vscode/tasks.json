@@ -125,7 +125,7 @@
     {
       "label": "8️⃣ Rebuild and Restart Main-Page",
       "type": "shell",
-      "command": "docker compose up -d --build main-page && echo '' && echo '✅ Main-page rebuilt and restarted!' && docker compose logs --tail=20 main-page",
+      "command": "docker compose stop main-page && docker rmi main-page:latest 2>/dev/null || true && docker build --no-cache -t main-page:latest ./main-page && docker compose up -d main-page && echo '' && echo '✅ Main-page rebuilt (no cache) and restarted!' && docker compose logs --tail=20 main-page",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -139,7 +139,7 @@
     {
       "label": "9️⃣ Rebuild and Restart Highschool",
       "type": "shell",
-      "command": "docker compose up -d --build highschool && echo '' && echo '✅ Highschool rebuilt and restarted!' && docker compose logs --tail=20 highschool",
+      "command": "docker compose build --no-cache highschool && docker compose up -d highschool && echo '' && echo '✅ Highschool rebuilt (no cache) and restarted!' && docker compose logs --tail=20 highschool",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
