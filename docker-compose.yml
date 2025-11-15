@@ -1,0 +1,73 @@
+services:
+  # Nginx Reverse Proxy (모든 서비스의 진입점)
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - main-page
+    networks:
+      - web
+    restart: unless-stopped
+
+  # 메인 페이지 (가족정보 공유사이트)
+  main-page:
+    build:
+      context: ./main-page
+      dockerfile: Dockerfile
+    container_name: main-page
+    expose:
+      - "80"
+    networks:
+      - web
+    restart: unless-stopped
+
+  # Highschool 프로젝트 (입시일정 선택) - GHCR 이미지 사용
+  highschool:
+    image: ghcr.io/zerone6/highschool-calendar:latest
+    container_name: highschool
+    expose:
+      - "80"
+    networks:
+      - web
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Real Estate Calculator - Frontend (GHCR 이미지 사용)
+  realestate-frontend:
+    image: ghcr.io/zerone6/realestate-calc-frontend:latest
+    container_name: realestate-frontend
+    expose:
+      - "80"
+    networks:
+      - web
+    restart: unless-stopped
+
+  # Real Estate Calculator - Backend (GHCR 이미지 사용)
+  realestate-backend:
+    image: ghcr.io/zerone6/realestate-calc-backend:latest
+    container_name: realestate-backend
+    expose:
+      - "8080"
+    networks:
+      - web
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  web:
+    driver: bridge
