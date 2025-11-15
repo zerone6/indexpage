@@ -63,14 +63,17 @@ jobs:
             # Create networks if they don't exist
             docker network create web 2>/dev/null || true
 
-            # Pull latest images from GHCR for other services
-            docker compose pull highschool realestate-frontend realestate-backend || true
-
-            # Stop and remove old containers
+            # Stop old containers
             docker compose down
 
-            # Start all services
-            docker compose up -d
+            # Pull latest images from GHCR for other services (ignore errors if not available)
+            docker compose pull highschool realestate-frontend realestate-backend 2>/dev/null || echo "GHCR images not available yet, skipping..."
+
+            # Start nginx-proxy and main-page (essential services)
+            docker compose up -d nginx-proxy main-page
+
+            # Try to start optional services (if images are available)
+            docker compose --profile full up -d 2>/dev/null || echo "Optional services not available yet"
 
             # Show status
             echo ""
