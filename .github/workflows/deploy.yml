@@ -40,7 +40,7 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml,nginx/,main-page/"
+          source: "docker-compose.yml,.gitignore,*.md,*.sh,nginx/,main-page/"
           target: "~/indexpage/"
           strip_components: 0
           rm: true
