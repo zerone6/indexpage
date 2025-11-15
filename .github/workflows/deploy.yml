@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "docker-compose.yml,nginx/,main-page/"
-          target: "~/infrastructure/"
+          target: "~/indexpage/"
           strip_components: 0
           rm: true
 
@@ -57,8 +57,8 @@ jobs:
             docker load < main-page-image.tar.gz
             rm -f main-page-image.tar.gz
 
-            # Navigate to infrastructure directory
-            cd ~/infrastructure
+            # Navigate to indexpage directory
+            cd ~/indexpage
 
             # Create networks if they don't exist
             docker network create web 2>/dev/null || true

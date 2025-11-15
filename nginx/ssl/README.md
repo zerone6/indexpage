@@ -11,9 +11,9 @@
 
 ```bash
 # 서버에서 인증서 복사
-sudo cp /etc/letsencrypt/live/hstarsp.net/fullchain.pem ~/infrastructure/nginx/ssl/
-sudo cp /etc/letsencrypt/live/hstarsp.net/privkey.pem ~/infrastructure/nginx/ssl/
-sudo chown $USER:$USER ~/infrastructure/nginx/ssl/*.pem
+sudo cp /etc/letsencrypt/live/hstarsp.net/fullchain.pem ~/indexpage/nginx/ssl/
+sudo cp /etc/letsencrypt/live/hstarsp.net/privkey.pem ~/indexpage/nginx/ssl/
+sudo chown $USER:$USER ~/indexpage/nginx/ssl/*.pem
 ```
 
 ## Let's Encrypt 인증서 갱신
@@ -23,12 +23,12 @@ sudo chown $USER:$USER ~/infrastructure/nginx/ssl/*.pem
 sudo certbot renew
 
 # 갱신 후 새 인증서 복사
-sudo cp /etc/letsencrypt/live/hstarsp.net/fullchain.pem ~/infrastructure/nginx/ssl/
-sudo cp /etc/letsencrypt/live/hstarsp.net/privkey.pem ~/infrastructure/nginx/ssl/
-sudo chown $USER:$USER ~/infrastructure/nginx/ssl/*.pem
+sudo cp /etc/letsencrypt/live/hstarsp.net/fullchain.pem ~/indexpage/nginx/ssl/
+sudo cp /etc/letsencrypt/live/hstarsp.net/privkey.pem ~/indexpage/nginx/ssl/
+sudo chown $USER:$USER ~/indexpage/nginx/ssl/*.pem
 
 # Nginx 재시작
-cd ~/infrastructure
+cd ~/indexpage
 docker compose restart nginx-proxy
 ```
 
@@ -41,7 +41,7 @@ Let's Encrypt 인증서는 90일마다 만료됩니다. 자동 갱신을 위해 
 sudo crontab -e
 
 # 매월 1일 새벽 2시에 갱신 확인
-0 2 1 * * certbot renew --quiet && cp /etc/letsencrypt/live/hstarsp.net/*.pem ~/infrastructure/nginx/ssl/ && docker restart nginx-proxy
+0 2 1 * * certbot renew --quiet && cp /etc/letsencrypt/live/hstarsp.net/*.pem ~/indexpage/nginx/ssl/ && docker restart nginx-proxy
 ```
 
 ## 보안 주의사항

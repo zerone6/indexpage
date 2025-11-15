@@ -1,4 +1,4 @@
-# Infrastructure
+# Index Page (Infrastructure)
 
 This repository manages the deployment infrastructure for all microservices.
 
@@ -31,7 +31,7 @@ This repository manages the deployment infrastructure for all microservices.
 ## Repository Structure
 
 ```
-infrastructure/
+indexpage/
 ├── docker-compose.yml          # Service orchestration
 ├── nginx/
 │   ├── nginx.conf             # Main nginx config
@@ -69,7 +69,7 @@ graph LR
 
 ```bash
 # On server
-cd ~/infrastructure
+cd ~/indexpage
 git pull origin main
 docker compose pull
 docker compose up -d
@@ -81,7 +81,7 @@ docker compose up -d
 
 ```bash
 # Create new repository on GitHub
-# Name: infrastructure
+# Name: indexpage
 
 # Clone and initialize
 cd /Users/seonpillhwang/GitHub/homegroup
@@ -90,7 +90,7 @@ git init
 git branch -M main
 git add .
 git commit -m "Initial infrastructure setup"
-git remote add origin https://github.com/YOUR_USERNAME/infrastructure.git
+git remote add origin https://github.com/YOUR_USERNAME/indexpage.git
 git push -u origin main
 ```
 
@@ -108,10 +108,10 @@ On the server, copy your existing SSL certificates:
 
 ```bash
 # On server
-mkdir -p ~/infrastructure/nginx/ssl
-sudo cp /etc/letsencrypt/live/hstarsp.net/fullchain.pem ~/infrastructure/nginx/ssl/
-sudo cp /etc/letsencrypt/live/hstarsp.net/privkey.pem ~/infrastructure/nginx/ssl/
-sudo chown $USER:$USER ~/infrastructure/nginx/ssl/*.pem
+mkdir -p ~/indexpage/nginx/ssl
+sudo cp /etc/letsencrypt/live/hstarsp.net/fullchain.pem ~/indexpage/nginx/ssl/
+sudo cp /etc/letsencrypt/live/hstarsp.net/privkey.pem ~/indexpage/nginx/ssl/
+sudo chown $USER:$USER ~/indexpage/nginx/ssl/*.pem
 ```
 
 See [nginx/ssl/README.md](nginx/ssl/README.md) for certificate renewal instructions.
@@ -213,7 +213,7 @@ See [nginx/ssl/README.md](nginx/ssl/README.md) for certificate management.
 ### Update all services
 
 ```bash
-cd ~/infrastructure
+cd ~/indexpage
 git pull origin main
 docker compose pull
 docker compose up -d
@@ -235,7 +235,7 @@ docker stats
 
 - [highschool-calendar](https://github.com/zerone6/highschool-calendar) - 입시일정 선택 서비스
 - [realestate-calc](https://github.com/zerone6/realestate-calc) - 부동산 계산기 서비스
-- [infrastructure](https://github.com/zerone6/infrastructure) - This repository
+- [indexpage](https://github.com/zerone6/indexpage) - This repository
 
 ## License
 
