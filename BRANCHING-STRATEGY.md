@@ -182,7 +182,18 @@ gh pr create --base main --head dev \
 # GitHub에서 "Merge pull request" 클릭
 # 또는 CLI:
 gh pr merge --merge
+
+# 6. 로컬 main 브랜치 동기화 (중요!)
+git checkout main
+git pull origin main  # 원격의 merge된 내용 가져오기
+
+# 7. dev로 돌아가기
+git checkout dev
+
+# 이제 origin/main과 로컬 main이 동기화됨
 ```
+
+⚠️ **중요:** PR merge 후 반드시 로컬 main을 업데이트하세요! 그래야 다음 배포 시 충돌이 없습니다.
 
 ### 즉시 배포 (긴급)
 
@@ -418,6 +429,8 @@ git push origin dev
 # 4. PR 생성: dev → main
 gh pr create --base main --head dev
 # 5. PR 머지 → 자동 배포
+# 6. 로컬 main 동기화
+git checkout main && git pull origin main && git checkout dev
 ```
 
 ### 빠른 배포 (긴급)
