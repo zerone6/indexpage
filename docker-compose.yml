@@ -33,8 +33,6 @@ services:
     networks:
       - web
     restart: unless-stopped
-    profiles:
-      - full
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
       interval: 30s
