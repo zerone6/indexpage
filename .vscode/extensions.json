@@ -5,6 +5,8 @@
     "redhat.vscode-yaml",
     "esbenp.prettier-vscode",
     "ritwickdey.LiveServer",
-    "ms-vscode.live-server"
+    "ms-vscode.live-server",
+    "yzhang.markdown-all-in-one",
+    "bierner.markdown-preview-github-styles"
   ]
 }
