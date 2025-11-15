@@ -8,7 +8,7 @@ echo ""
 # 1. SSL 인증서 확인 및 복사
 echo "1. SSL 인증서 확인 및 복사"
 echo "------------------------------------------"
-if [ -d /etc/letsencrypt/live/hstarsp.net ]; then
+if sudo test -d /etc/letsencrypt/live/hstarsp.net; then
     echo "✓ Let's Encrypt 인증서 발견"
 
     mkdir -p ~/indexpage/nginx/ssl
