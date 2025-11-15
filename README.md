@@ -123,6 +123,7 @@ graph TB
 ### 시작하기
 - **[LOCAL-DEVELOPMENT.md](LOCAL-DEVELOPMENT.md)** - 로컬 개발 환경 설정 가이드
 - **[GUIDE-DEPLOY-PROCESS.md](GUIDE-DEPLOY-PROCESS.md)** - 배포 프로세스 완전 가이드
+- **[.vscode/tasks.json](.vscode/tasks.json)** - VS Code 개발 태스크 (Cmd+Shift+P → "Run Task")
 - **초기 설정 방법**은 아래 "초기 설정" 섹션 참조
 
 ### 서비스 관리
