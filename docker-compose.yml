@@ -43,7 +43,7 @@ services:
 
   # Real Estate Calculator - Frontend (GHCR 이미지)
   realestate-frontend:
-    image: ghcr.io/homegroup/my-realestate-calc/frontend:latest
+    image: ghcr.io/zerone6/my-realestate-calc/frontend:latest
     container_name: realestate-frontend
     expose:
       - "80"
@@ -58,7 +58,7 @@ services:
 
   # Real Estate Calculator - Backend (GHCR 이미지)
   realestate-backend:
-    image: ghcr.io/homegroup/my-realestate-calc/backend:latest
+    image: ghcr.io/zerone6/my-realestate-calc/backend:latest
     container_name: realestate-backend
     expose:
       - "8080"
