@@ -78,6 +78,7 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          command_timeout: 20m
           script: |
             # Load main-page image
             cd /tmp
@@ -125,10 +126,24 @@ jobs:
               echo "No GHCR_PAT found, attempting to pull public images only..."
             fi
 
-            # Pull latest images from GHCR for other services (ignore errors if not available)
-            docker compose pull highschool realestate-frontend realestate-backend 2>/dev/null || echo "Some GHCR images not available, will skip those services"
+            # Pull latest images from GHCR for other services with progress
+            echo "Pulling GHCR images... This may take several minutes on first deployment."
+            echo "Starting pull at: $(date)"
+
+            # Pull each service separately to show progress
+            echo "Pulling highschool image..."
+            docker compose pull highschool 2>&1 || echo "Highschool image not available, skipping..."
+
+            echo "Pulling realestate-frontend image..."
+            docker compose pull realestate-frontend 2>&1 || echo "Frontend image not available, skipping..."
+
+            echo "Pulling realestate-backend image..."
+            docker compose pull realestate-backend 2>&1 || echo "Backend image not available, skipping..."
+
+            echo "Pull completed at: $(date)"
 
             # Start all services (nginx-proxy depends on all services, so it will start them all)
+            echo "Starting services..."
             docker compose up -d
 
             # Show status
