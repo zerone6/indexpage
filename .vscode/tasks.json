@@ -7,7 +7,7 @@
     {
       "label": "1️⃣ Start Other Services",
       "type": "shell",
-      "command": "docker compose up -d main-page highschool",
+      "command": "docker compose up -d main-page highschool realestate-frontend realestate-backend",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -25,7 +25,7 @@
     {
       "label": "2️⃣ Start Indexpage (Nginx)",
       "type": "shell",
-      "command": "if docker compose ps main-page highschool 2>/dev/null | grep -q 'Up'; then docker compose up -d nginx-proxy; else echo '⚠️  Backend services not running! Run \"1️⃣ Start Other Services\" first.'; exit 1; fi",
+      "command": "if docker compose ps main-page highschool realestate-frontend realestate-backend 2>/dev/null | grep -q 'Up'; then docker compose up -d nginx-proxy; else echo '⚠️  Backend services not running! Run \"1️⃣ Start Other Services\" first.'; exit 1; fi",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -79,7 +79,7 @@
     {
       "label": "5️⃣ Stop Other Services",
       "type": "shell",
-      "command": "docker compose stop main-page highschool && echo '✅ Other services stopped'",
+      "command": "docker compose stop main-page highschool realestate-frontend realestate-backend && echo '✅ Other services stopped'",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -139,7 +139,21 @@
     {
       "label": "9️⃣ Rebuild and Restart Highschool",
       "type": "shell",
-      "command": "docker compose build --no-cache highschool && docker compose up -d highschool && echo '' && echo '✅ Highschool rebuilt (no cache) and restarted!' && docker compose logs --tail=20 highschool",
+      "command": "docker compose pull highschool && docker compose up -d highschool && echo '' && echo '✅ Highschool pulled and restarted!' && docker compose logs --tail=20 highschool",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔟 Rebuild and Restart Real-Estate",
+      "type": "shell",
+      "command": "docker compose pull realestate-frontend realestate-backend && docker compose up -d realestate-frontend realestate-backend && echo '' && echo '✅ Real-Estate pulled and restarted!' && docker compose logs --tail=20 realestate-frontend realestate-backend",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -215,6 +229,36 @@
       }
     },
     {
+      "label": "📋 View Real-Estate Frontend Logs",
+      "type": "shell",
+      "command": "docker compose logs -f realestate-frontend",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
+      "label": "📋 View Real-Estate Backend Logs",
+      "type": "shell",
+      "command": "docker compose logs -f realestate-backend",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      }
+    },
+    {
       "label": "📊 View Service Status",
       "type": "shell",
       "command": "clear && echo '=== Docker Compose Services ===' && docker compose ps && echo '' && echo '=== Resource Usage ===' && docker stats --no-stream",
@@ -235,7 +279,7 @@
     {
       "label": "🧪 Test Endpoints",
       "type": "shell",
-      "command": "echo '=== Testing Endpoints ===' && echo '' && echo 'Main Page (HTTPS):' && curl -k -s https://localhost/ | grep -q '가족 정보' && echo '✅ OK' || echo '❌ FAIL' && echo '' && echo 'Highschool (HTTPS):' && curl -k -s https://localhost/highschool/ | head -c 100 && echo '' && echo '' && echo 'Health Check:' && curl -s http://localhost/health && echo ''",
+      "command": "echo '=== Testing Endpoints ===' && echo '' && echo 'Main Page (HTTPS):' && curl -k -s https://localhost/ | grep -q '가족 정보' && echo '✅ OK' || echo '❌ FAIL' && echo '' && echo 'Highschool (HTTPS):' && curl -k -s https://localhost/highschool/ | head -c 100 && echo '' && echo '' && echo 'Real-Estate (HTTPS):' && curl -k -s https://localhost/realestate/ | head -c 100 && echo '' && echo '' && echo 'Health Check:' && curl -s http://localhost/health && echo ''",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -279,9 +323,23 @@
       }
     },
     {
-      "label": "🔧 Rebuild All Images (No Cache)",
+      "label": "🔧 Pull All GHCR Images",
       "type": "shell",
-      "command": "docker compose build --no-cache && echo '✅ All images rebuilt'",
+      "command": "docker compose pull highschool realestate-frontend realestate-backend && echo '✅ All GHCR images pulled'",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "🔧 Rebuild Main-Page Image",
+      "type": "shell",
+      "command": "docker build --no-cache -t main-page:latest ./main-page && echo '✅ Main-page image rebuilt'",
       "problemMatcher": [],
       "presentation": {
         "echo": true,
@@ -300,38 +358,6 @@
       "presentation": {
         "echo": true,
         "reveal": "silent",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": false,
-        "clear": false
-      }
-    },
-
-    // ========================================
-    // 프로덕션 모드 (Production Mode)
-    // ========================================
-    {
-      "label": "🚀 Start Production Mode (GHCR)",
-      "type": "shell",
-      "command": "docker compose -f docker-compose.yml pull && docker compose -f docker-compose.yml up -d && echo '' && echo '✅ Production mode started!' && docker compose ps",
-      "problemMatcher": [],
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": true,
-        "panel": "dedicated",
-        "showReuseMessage": false,
-        "clear": false
-      }
-    },
-    {
-      "label": "🚀 Stop Production Mode",
-      "type": "shell",
-      "command": "docker compose -f docker-compose.yml down && echo '✅ Production mode stopped'",
-      "problemMatcher": [],
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
         "focus": false,
         "panel": "shared",
         "showReuseMessage": false,

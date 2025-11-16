@@ -16,6 +16,8 @@ services:
     depends_on:
       - main-page
       - highschool
+      - realestate-frontend
+      - realestate-backend
 
   # 메인 페이지 (가족정보 공유사이트)
   main-page:
@@ -42,31 +44,40 @@ services:
       timeout: 10s
       retries: 3
 
-  # Real Estate Calculator - Frontend (GHCR 이미지 사용)
+  # Real Estate Calculator - Frontend (로컬 빌드)
   realestate-frontend:
-    image: ghcr.io/zerone6/realestate-calc-frontend:latest
+    build:
+      context: ../my-realestate-calc
+      dockerfile: ./pcweb/Dockerfile
     container_name: realestate-frontend
     expose:
       - "80"
     networks:
       - web
     restart: unless-stopped
-    profiles:
-      - full
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  # Real Estate Calculator - Backend (GHCR 이미지 사용)
+  # Real Estate Calculator - Backend (로컬 빌드)
   realestate-backend:
-    image: ghcr.io/zerone6/realestate-calc-backend:latest
+    build:
+      context: ../my-realestate-calc/backend
     container_name: realestate-backend
     expose:
       - "8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=${REALESTATE_DB_URL:-jdbc:postgresql://host.docker.internal:5432/realestate}
+      - SPRING_DATASOURCE_USERNAME=${REALESTATE_DB_USERNAME:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${REALESTATE_DB_PASSWORD:-postgres}
     networks:
       - web
     restart: unless-stopped
-    profiles:
-      - full
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
       interval: 30s
       timeout: 10s
       retries: 5
