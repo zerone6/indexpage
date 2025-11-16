@@ -15,9 +15,6 @@ services:
     restart: unless-stopped
     depends_on:
       - main-page
-      - highschool
-      - realestate-frontend
-      - realestate-backend
 
   # 메인 페이지 (가족정보 공유사이트)
   main-page:
@@ -44,12 +41,9 @@ services:
       timeout: 10s
       retries: 3
 
-  # Real Estate Calculator - Frontend (GHCR 이미지 사용, 로컬 빌드 폴백)
+  # Real Estate Calculator - Frontend (GHCR 이미지)
   realestate-frontend:
     image: ghcr.io/homegroup/my-realestate-calc/frontend:latest
-    build:
-      context: ../my-realestate-calc
-      dockerfile: ./pcweb/Dockerfile
     container_name: realestate-frontend
     expose:
       - "80"
@@ -62,11 +56,9 @@ services:
       timeout: 10s
       retries: 3
 
-  # Real Estate Calculator - Backend (GHCR 이미지 사용, 로컬 빌드 폴백)
+  # Real Estate Calculator - Backend (GHCR 이미지)
   realestate-backend:
     image: ghcr.io/homegroup/my-realestate-calc/backend:latest
-    build:
-      context: ../my-realestate-calc/backend
     container_name: realestate-backend
     expose:
       - "8080"

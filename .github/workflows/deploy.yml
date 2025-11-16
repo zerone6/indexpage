@@ -117,6 +117,14 @@ jobs:
             # Stop old containers
             docker compose down
 
+            # Login to GHCR to pull private images (using PAT if available)
+            if [ -n "${{ secrets.GHCR_PAT }}" ]; then
+              echo "Logging in to GHCR..."
+              echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+            else
+              echo "No GHCR_PAT found, attempting to pull public images only..."
+            fi
+
             # Pull latest images from GHCR for other services (ignore errors if not available)
             docker compose pull highschool realestate-frontend realestate-backend 2>/dev/null || echo "Some GHCR images not available, will skip those services"
 
