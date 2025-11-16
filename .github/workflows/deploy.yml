@@ -25,7 +25,7 @@ jobs:
         run: |
           docker save main-page:latest | gzip > main-page-image.tar.gz
 
-      - name: Backup SSL Certificates on Server
+      - name: Backup SSL Certificates and .env on Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_HOST }}
@@ -41,6 +41,15 @@ jobs:
               ls -la /tmp/ssl_backup/
             else
               echo "No existing SSL certificates to backup"
+            fi
+
+            # Backup .env file BEFORE file copy
+            if [ -f ~/indexpage/.env ]; then
+              echo "Backing up .env file..."
+              cp ~/indexpage/.env /tmp/.env.backup
+              echo ".env file backed up to /tmp/.env.backup"
+            else
+              echo "No existing .env file to backup"
             fi
 
       - name: Copy Docker Image to Server
@@ -91,6 +100,17 @@ jobs:
               echo "You may need to run: sudo cp /etc/letsencrypt/live/hstarsp.net/*.pem ~/indexpage/nginx/ssl/"
             fi
 
+            # Restore .env file from backup
+            if [ -f /tmp/.env.backup ]; then
+              echo "Restoring .env file..."
+              cp /tmp/.env.backup .env
+              echo ".env file restored"
+              rm -f /tmp/.env.backup
+            else
+              echo "WARNING: No .env file backup found!"
+              echo "You may need to create .env file manually"
+            fi
+
             # Create networks if they don't exist
             docker network create web 2>/dev/null || true
 
@@ -98,13 +118,10 @@ jobs:
             docker compose down
 
             # Pull latest images from GHCR for other services (ignore errors if not available)
-            docker compose pull highschool realestate-frontend realestate-backend 2>/dev/null || echo "GHCR images not available yet, skipping..."
+            docker compose pull highschool realestate-frontend realestate-backend 2>/dev/null || echo "Some GHCR images not available, will skip those services"
 
-            # Start nginx-proxy and main-page (essential services)
-            docker compose up -d nginx-proxy main-page
-
-            # Try to start optional services (if images are available)
-            docker compose --profile full up -d 2>/dev/null || echo "Optional services not available yet"
+            # Start all services (nginx-proxy depends on all services, so it will start them all)
+            docker compose up -d
 
             # Show status
             echo ""
