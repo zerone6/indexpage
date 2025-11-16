@@ -44,8 +44,9 @@ services:
       timeout: 10s
       retries: 3
 
-  # Real Estate Calculator - Frontend (로컬 빌드)
+  # Real Estate Calculator - Frontend (GHCR 이미지 사용, 로컬 빌드 폴백)
   realestate-frontend:
+    image: ghcr.io/homegroup/my-realestate-calc/frontend:latest
     build:
       context: ../my-realestate-calc
       dockerfile: ./pcweb/Dockerfile
@@ -61,15 +62,16 @@ services:
       timeout: 10s
       retries: 3
 
-  # Real Estate Calculator - Backend (로컬 빌드)
+  # Real Estate Calculator - Backend (GHCR 이미지 사용, 로컬 빌드 폴백)
   realestate-backend:
+    image: ghcr.io/homegroup/my-realestate-calc/backend:latest
     build:
       context: ../my-realestate-calc/backend
     container_name: realestate-backend
     expose:
       - "8080"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-dev}
       - SPRING_DATASOURCE_URL=${REALESTATE_DB_URL:-jdbc:postgresql://host.docker.internal:5432/realestate}
       - SPRING_DATASOURCE_USERNAME=${REALESTATE_DB_USERNAME:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${REALESTATE_DB_PASSWORD:-postgres}
