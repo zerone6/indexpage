@@ -130,15 +130,8 @@ jobs:
             echo "Pulling GHCR images... This may take several minutes on first deployment."
             echo "Starting pull at: $(date)"
 
-            # Pull each service separately to show progress
-            echo "Pulling highschool image..."
-            docker compose pull highschool 2>&1 || echo "Highschool image not available, skipping..."
-
-            echo "Pulling realestate-frontend image..."
-            docker compose pull realestate-frontend 2>&1 || echo "Frontend image not available, skipping..."
-
-            echo "Pulling realestate-backend image..."
-            docker compose pull realestate-backend 2>&1 || echo "Backend image not available, skipping..."
+            # Pull all images at once (Docker will skip unchanged layers)
+            docker compose pull --ignore-pull-failures 2>&1 || echo "Some images not available, skipping..."
 
             echo "Pull completed at: $(date)"
 
