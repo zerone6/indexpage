@@ -161,7 +161,49 @@ git push -u origin main
 - `REMOTE_USER` - SSH 사용자명 (예: ubuntu)
 - `SSH_PRIVATE_KEY` - 서버 접속용 SSH 개인키
 
-### 3. SSL 인증서 설정 (서버)
+### 3. 환경변수 설정 (.env)
+
+**로컬 개발 환경:**
+
+```bash
+# .env 파일 자동 생성
+./setup-env.sh
+
+# 또는 수동으로
+cp .env.example .env
+nano .env
+```
+
+**.env 파일 내용:**
+
+```env
+# Spring Profile
+SPRING_PROFILES_ACTIVE=dev
+
+# Real Estate Calculator - Database
+REALESTATE_DB_URL=jdbc:postgresql://host.docker.internal:5432/realestate
+REALESTATE_DB_USERNAME=postgres
+REALESTATE_DB_PASSWORD=postgres
+```
+
+**프로덕션 서버:**
+
+```bash
+# 서버에서 .env 파일 생성
+cd ~/indexpage
+nano .env
+```
+
+프로덕션 환경에서는 실제 데이터베이스 서버 정보로 변경하세요:
+
+```env
+SPRING_PROFILES_ACTIVE=prod
+REALESTATE_DB_URL=jdbc:postgresql://192.168.50.100:5432/realestate
+REALESTATE_DB_USERNAME=realestate_user
+REALESTATE_DB_PASSWORD=strong_production_password
+```
+
+### 4. SSL 인증서 설정 (서버)
 
 ```bash
 # 서버 SSH 접속
@@ -176,7 +218,24 @@ sudo chown $USER:$USER ~/indexpage/nginx/ssl/*.pem
 
 SSL 인증서가 없다면 `setup-ssl.sh` 스크립트를 참조하여 새로 발급하세요.
 
-### 4. 첫 배포
+### 5. 로컬 개발 환경 실행
+
+**로컬 개발 (Mac M1/M2 ARM64 지원):**
+
+```bash
+cd ~/GitHub/homegroup/indexpage
+
+# 로컬 빌드용 compose 파일 사용
+docker compose -f docker-compose.local.yml up -d
+
+# 또는 환경변수로 설정
+export COMPOSE_FILE=docker-compose.local.yml
+docker compose up -d
+```
+
+### 6. 프로덕션 배포
+
+**GitHub Actions 자동 배포:**
 
 로컬에서 코드를 푸시하면 GitHub Actions가 자동으로 배포합니다:
 
@@ -184,10 +243,16 @@ SSL 인증서가 없다면 `setup-ssl.sh` 스크립트를 참조하여 새로 �
 git push origin main
 ```
 
-또는 서버에서 수동 배포:
+**서버에서 수동 배포:**
 
 ```bash
 cd ~/indexpage
+
+# 프로덕션용 GHCR 이미지 사용
+docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml up -d
+
+# 또는 (docker-compose.yml이 prod로 심볼릭 링크됨)
 docker compose up -d
 ```
 

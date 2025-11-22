@@ -38,6 +38,7 @@ Temporary Items
 
 # Docker
 *.tar.gz
+docker-compose.yml  # 심볼릭 링크 (로컬 환경마다 다를 수 있음)
 
 # Logs
 *.log
